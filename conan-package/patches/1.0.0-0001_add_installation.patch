@@ -1,0 +1,69 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+new file mode 100644
+index 0000000..19f20d7
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,50 @@
++cmake_minimum_required(VERSION 3.5)
++
++project(subprocess.h
++    VERSION 1.0.0
++    LANGUAGES CXX
++    DESCRIPTION "single header process launching solution for C and C++")
++
++set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
++
++# Header-only library
++set(SUBPROCESS_HEADER_FILE ${CMAKE_CURRENT_SOURCE_DIR}/subprocess.h/subprocess.h)
++
++# Create an INTERFACE target (header-only)
++add_library(subprocess.h INTERFACE)
++
++# Specify the include directory for consumers of this library
++target_include_directories(subprocess.h INTERFACE
++    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
++    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
++)
++
++# Installation directories
++include(GNUInstallDirs)
++
++# Install the header file
++install(FILES ${SUBPROCESS_HEADER_FILE}
++        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
++
++# Install the target
++install(TARGETS subprocess.h EXPORT subprocess.h-targets)
++
++# Package config helpers for relocatable package
++include(CMakePackageConfigHelpers)
++
++# Create a config file for find_package to work in the installed project
++configure_package_config_file(
++    "${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in"
++    "${CMAKE_CURRENT_BINARY_DIR}/subprocess.hConfig.cmake"
++    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/subprocess.h
++)
++
++# Install the config files
++install(FILES "${CMAKE_CURRENT_BINARY_DIR}/subprocess.hConfig.cmake"
++        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/subprocess.h)
++
++# Install the export targets
++install(EXPORT subprocess.h-targets
++        FILE subprocess.h-targets.cmake
++        NAMESPACE subprocess.h::
++        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/subprocess.h)
+diff --git a/Config.cmake.in b/Config.cmake.in
+new file mode 100644
+index 0000000..f4f5fcd
+--- /dev/null
++++ b/Config.cmake.in
+@@ -0,0 +1,7 @@
++@PACKAGE_INIT@
++
++# Set the include directory for the package
++set(subprocess_INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/../../include")
++
++# Import the target from the installed targets file
++include("${CMAKE_CURRENT_LIST_DIR}/subprocess.h-targets.cmake")

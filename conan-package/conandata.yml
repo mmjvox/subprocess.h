@@ -1,0 +1,10 @@
+sources:
+  "1.0.0":
+    url: "https://github.com/sheredom/subprocess.h.git"
+    type: "git"
+    revision: "master"
+patches:
+  "1.0.0":
+    - patch_file: "patches/1.0.0-0001_add_installation.patch"
+      patch_description: "add installation targets to cmake project"
+      patch_type: "conan"
